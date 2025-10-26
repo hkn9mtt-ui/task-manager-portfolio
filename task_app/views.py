@@ -1,33 +1,41 @@
+# task_app/views.py
+
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Task
+from .forms import TaskForm
 
+# 一覧表示
 def task_list(request):
-    tasks = Task.objects.all().order_by('deadline')
+    tasks = Task.objects.all()
     return render(request, 'task_app/task_list.html', {'tasks': tasks})
 
-def add_task(request):
+# タスク作成
+def task_create(request):
     if request.method == 'POST':
-        title = request.POST['title']
-        description = request.POST.get('description', '')
-        deadline = request.POST['deadline']
-        Task.objects.create(title=title, description=description, deadline=deadline)
-        return redirect('task_list')
-    return render(request, 'task_app/add_task.html')
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('task_list')
+    else:
+        form = TaskForm()
+    return render(request, 'task_app/task_form.html', {'form': form, 'title': '新しいタスクを追加'})
 
-def edit_task(request, task_id):
-    task = get_object_or_404(Task, id=task_id)
+# タスク編集
+def task_edit(request, pk):
+    task = get_object_or_404(Task, pk=pk)
     if request.method == 'POST':
-        task.title = request.POST['title']
-        task.description = request.POST.get('description', '')
-        task.deadline = request.POST['deadline']
-        task.progress = request.POST.get('progress', 0)
-        task.completed = 'completed' in request.POST
-        task.save()
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('task_list')
+    else:
+        form = TaskForm(instance=task)
+    return render(request, 'task_app/task_form.html', {'form': form, 'title': 'タスクを編集'})
+
+# タスク削除
+def task_delete(request, pk):
+    task = get_object_or_404(Task, pk=pk)
+    if request.method == 'POST':
+        task.delete()
         return redirect('task_list')
-    return render(request, 'task_app/edit_task.html', {'task': task})
-
-def delete_task(request, task_id):
-    task = get_object_or_404(Task, id=task_id)
-    task.delete()
-    return redirect('task_list')
-
+    return render(request, 'task_app/task_confirm_delete.html', {'task': task})

@@ -1,0 +1,16 @@
+{% extends 'task_app/base.html' %}
+
+{% block title %}タスク作成{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">タスク作成</h1>
+
+<div class="card shadow-sm p-4">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">保存</button>
+        <a href="{% url 'task_list' %}" class="btn btn-secondary">戻る</a>
+    </form>
+</div>
+{% endblock %}
