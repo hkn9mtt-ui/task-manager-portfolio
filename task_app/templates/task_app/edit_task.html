@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>タスク編集</title>
+</head>
+<body>
+    <h1>タスク編集</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label>タイトル: <input type="text" name="title" value="{{ task.title }}"></label><br>
+        <label>説明: <textarea name="description">{{ task.description }}</textarea></label><br>
+        <label>締切: <input type="date" name="deadline" value="{{ task.deadline|date:'Y-m-d' }}"></label><br>
+        <button type="submit">更新</button>
+    </form>
+    <a href="{% url 'task_list' %}">一覧に戻る</a>
+</body>
+</html>

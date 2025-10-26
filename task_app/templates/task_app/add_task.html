@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>タスク追加</title>
+</head>
+<body>
+    <h1>新しいタスクを追加</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label>タイトル: <input type="text" name="title"></label><br>
+        <label>説明: <textarea name="description"></textarea></label><br>
+        <label>締切日: <input type="date" name="deadline"></label><br>
+        <button type="submit">追加</button>
+    </form>
+
+    <p><a href="{% url 'task_list' %}">← 戻る</a></p>
+</body>
+</html>
